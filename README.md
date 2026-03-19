@@ -1,5 +1,7 @@
 # Codex Memory Lite
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 Make Codex less forgetful on long-running projects by moving key context out of chat history and into a small, structured memory layer inside each project.
 
 This package is mainly for:
