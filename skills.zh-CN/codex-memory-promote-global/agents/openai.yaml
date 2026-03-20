@@ -1,0 +1,7 @@
+interface:
+  display_name: "提升到全局记忆"
+  short_description: "把项目内稳定规则、主题和引用筛选后提升到全局记忆层"
+  default_prompt: "用 $codex-memory-promote-global 把稳定的项目记忆提升到全局记忆层。"
+
+policy:
+  allow_implicit_invocation: true

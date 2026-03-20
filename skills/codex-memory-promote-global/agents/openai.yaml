@@ -1,0 +1,7 @@
+interface:
+  display_name: "Promote To Global Memory"
+  short_description: "Promote stable project rules, topics, and references into the global memory layer"
+  default_prompt: "Use $codex-memory-promote-global to promote stable project memory into the global memory layer."
+
+policy:
+  allow_implicit_invocation: true

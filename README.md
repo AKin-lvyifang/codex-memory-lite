@@ -48,9 +48,13 @@ That turns "memory that only lives inside chat" into "memory that belongs to the
 - `snippets/`
   - root-level and project-level `AGENTS.md` snippets for triggering and reading the memory layer
 - `skills/`
-  - 3 helper skills for bootstrapping, task creation, and syncing
+  - English installable pack with 3 core project-memory skills plus 1 optional global promotion skill
+- `skills.zh-CN/`
+  - Simplified Chinese installable mirror of the same 4 skill packages
 - `templates/`
   - the canonical memory file templates
+- `scripts/`
+  - one-command installer for the English or Simplified Chinese skill pack
 - `examples/demo-project/`
   - a sanitized example project showing migrated handoff + structured memory
 - `docs/`
@@ -62,12 +66,28 @@ If you want to actually use this in Codex, the real setup is very simple:
 
 1. update your root-level `AGENTS.md`
 2. update the project-level `AGENTS.md` for each project that should use structured memory
-3. install the 3 provided skills
-4. keep the bundled templates together with those skills
+3. install the skill pack in your preferred language
+4. keep the bundled templates and support files together with those skills
 
 Detailed guide:
 
 - [docs/install.md](docs/install.md)
+
+### One-Command Install
+
+Install the English pack:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
+```
+
+Install the Simplified Chinese pack:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
+```
+
+Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default.
 
 ### Step 1. Update your root-level `AGENTS.md`
 
@@ -98,26 +118,35 @@ It tells Codex:
 - what belongs in `current`, `spec`, `tasks`, and `archive`
 - when `current.md` should be updated
 
-### Step 3. Install the 3 skills
+### Step 3. Install the skill pack
 
-Copy these three folders into the skills directory your Codex instance loads:
+Choose one language pack:
 
-- `skills/codex-memory-bootstrap/`
-- `skills/codex-memory-task-init/`
-- `skills/codex-memory-sync/`
+- English pack: `skills/`
+- Simplified Chinese pack: `skills.zh-CN/`
+
+Each language pack includes these 3 core skills:
+
+- `codex-memory-bootstrap`
+- `codex-memory-task-init`
+- `codex-memory-sync`
+
+Optional cross-project skill:
+
+- `codex-memory-promote-global`
 
 If your environment already uses a shared skill directory, keep using that directory.
 
 The important part is:
 
-- Codex can discover these 3 skills
-- each skill keeps its own `templates/` folder next to `SKILL.md`
+- Codex can discover the pack you chose
+- each skill keeps its own `templates/`, `references/`, `scripts/`, or other support files next to `SKILL.md` when required
 
 ### Step 4. Keep templates with the skills
 
 Do not install only the `SKILL.md` files.
 
-Each skill expects its template files to exist beside it.
+Each skill expects its support files to exist beside it.
 
 That is how the generated memory files stay consistent instead of drifting over time.
 
@@ -131,7 +160,9 @@ Typical first run:
 4. when a new major task appears, run `codex-memory-task-init`
 5. when the phase changes or the thread is ending, run `codex-memory-sync`
 
-## The 3 Skills
+## The Skill Packs
+
+### 3 Core Project-Memory Skills
 
 ### `codex-memory-bootstrap`
 
@@ -166,6 +197,20 @@ It keeps:
 - archive notes
 
 in sync with the latest reality.
+
+### 1 Optional Cross-Project Skill
+
+#### `codex-memory-promote-global`
+
+Use when confirmed, reusable knowledge should be lifted into a separate global memory layer.
+
+It helps promote:
+
+- durable rules
+- recurring workflows
+- shared topics that span more than one project
+
+This flow is explicit and opt-in. It does **not** automatically share all project context across repositories.
 
 ## How Root And Project Rules Work Together
 
@@ -214,7 +259,7 @@ Default order:
 ### Start a new long-running project
 
 1. Add the root snippet into your root `AGENTS.md`.
-2. Keep the 3 skills available in your Codex skills directory.
+2. Keep the 3 core skills available in your Codex skills directory.
 3. When the project crosses the trigger threshold, run `codex-memory-bootstrap`.
 
 ### Start a new major task
@@ -224,6 +269,10 @@ Run `codex-memory-task-init`.
 ### End a phase or finish a long turn
 
 Run `codex-memory-sync`.
+
+### Maintain an explicit global memory layer
+
+If you also keep a separate global memory layer, install `codex-memory-promote-global` from the same language pack and run it only when you intentionally want to promote stable cross-project knowledge.
 
 ## What "Cross-Project" Means Here
 
@@ -238,7 +287,7 @@ At the cross-project level, what you really reuse is:
 
 - the same trigger rules
 - the same project memory structure
-- the same 3 skills
+- the same core skill pack
 - the same templates
 
 In other words:
@@ -246,6 +295,8 @@ In other words:
 it reuses the memory mechanism across projects.
 
 It does **not** mean all projects should automatically share all business context with each other.
+
+Global promotion, if you use it, is explicit and opt-in.
 
 ## Migration From A Single Handoff File
 

@@ -7,8 +7,8 @@ Make Codex use this structured memory system in real projects.
 The install is basically just three things:
 
 1. update the right `AGENTS.md` files
-2. install the 3 skills
-3. keep the templates together with the skills
+2. install the skill pack in your preferred language
+3. keep the templates and support files together with the skills
 
 ## What You Need To Update
 
@@ -43,16 +43,43 @@ Its job is to tell Codex:
 
 ## How To Install The Skills
 
-Copy these folders into the skill directory your Codex instance already scans:
+### One-command install
 
-- `skills/codex-memory-bootstrap/`
-- `skills/codex-memory-task-init/`
-- `skills/codex-memory-sync/`
+Install the English pack:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
+```
+
+Install the Simplified Chinese pack:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
+```
+
+Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default.
+
+### Manual install
+
+Choose one language pack:
+
+- English pack: `skills/`
+- Simplified Chinese pack: `skills.zh-CN/`
+
+Each language pack includes these 3 core skills:
+
+- `codex-memory-bootstrap`
+- `codex-memory-task-init`
+- `codex-memory-sync`
+
+Optional cross-project skill:
+
+- `codex-memory-promote-global`
 
 Important:
 
 - do not copy only `SKILL.md`
-- keep each skill's `templates/` folder beside it
+- keep each skill's `templates/`, `references/`, `scripts/`, and other support files beside it when they exist
 
 That is what keeps file generation stable and consistent.
 
@@ -60,7 +87,7 @@ That is what keeps file generation stable and consistent.
 
 1. put the root snippet into your root `AGENTS.md`
 2. put the project snippet into a project's `AGENTS.md`
-3. install the 3 skills
+3. install the 3 core skills from one language pack
 4. open the project in Codex
 5. run `codex-memory-bootstrap`
 
@@ -68,6 +95,7 @@ After that:
 
 - when a new major task appears, run `codex-memory-task-init`
 - when a phase changes or a long thread is ending, run `codex-memory-sync`
+- if you maintain a separate global memory layer, optionally install and run `codex-memory-promote-global`
 
 ## Recommended File Layout
 

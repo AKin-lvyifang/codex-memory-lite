@@ -50,9 +50,13 @@
 - `snippets/`
   - 根级和项目级 `AGENTS.md` 片段，用来让 Codex 知道什么时候启用这套结构化记忆
 - `skills/`
-  - 3 个辅助 skills，分别负责初始化、建任务、同步记忆
+  - 英文可安装包，包含 3 个核心项目记忆 skill 和 1 个可选的全局提升 skill
+- `skills.zh-CN/`
+  - 简体中文可安装镜像包，包含同样的 4 个 skill
 - `templates/`
   - 这一整套记忆文件的标准模板
+- `scripts/`
+  - 一键安装脚本，可按语言安装英文包或中文版
 - `examples/demo-project/`
   - 一个已经完成迁移的示例项目
 - `docs/`
@@ -64,12 +68,28 @@
 
 1. 更新你的根级 `AGENTS.md`
 2. 更新每个项目里的 `AGENTS.md`
-3. 安装这 3 个 skills
-4. 保证模板和 skills 放在一起
+3. 安装你需要的语言包
+4. 保证模板和配套文件跟 skills 放在一起
 
 详细安装看：
 
 - [docs/install.md](docs/install.md)
+
+### 一键安装
+
+安装英文包：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
+```
+
+安装简体中文包：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
+```
+
+这两条命令默认都会把所选技能包安装到 `${CODEX_HOME:-$HOME/.codex}/skills`。
 
 ### 第 1 步：更新根级 `AGENTS.md`
 
@@ -100,18 +120,27 @@
 - 哪些信息该进 `current / spec / tasks / archive`
 - 什么时候要更新 `current.md`
 
-### 第 3 步：安装这 3 个 skills
+### 第 3 步：安装语言包
 
-把这 3 个文件夹复制到你的 Codex skills 目录里：
+先选一个语言包：
 
-- `skills/codex-memory-bootstrap/`
-- `skills/codex-memory-task-init/`
-- `skills/codex-memory-sync/`
+- 英文包：`skills/`
+- 简体中文包：`skills.zh-CN/`
+
+每个语言包都包含这 3 个核心 skill：
+
+- `codex-memory-bootstrap`
+- `codex-memory-task-init`
+- `codex-memory-sync`
+
+可选的跨项目 skill：
+
+- `codex-memory-promote-global`
 
 关键点有两个：
 
 - 不是只复制 `SKILL.md`
-- 每个 skill 自己的 `templates/` 必须跟着一起放
+- 每个 skill 自己的 `templates/`、`references/`、`scripts/` 等配套文件也必须一起放
 
 只有这样，后面自动生成出来的记忆文件才会稳定，不会越跑越歪。
 
@@ -125,7 +154,9 @@
 4. 遇到新的大任务时，运行 `codex-memory-task-init`
 5. 阶段切换或准备结束线程时，运行 `codex-memory-sync`
 
-## 这 3 个 skills 分别做什么
+## 技能包里有什么
+
+### 3 个核心项目记忆 skill
 
 ### `codex-memory-bootstrap`
 
@@ -158,6 +189,20 @@
 - `current.md`
 - 活跃任务文件
 - archive 记录
+
+### 1 个可选的跨项目 skill
+
+#### `codex-memory-promote-global`
+
+适合在你明确要维护“全局记忆层”时使用。
+
+它会帮助你把这些内容提升出去：
+
+- 跨项目仍然成立的稳定规则
+- 会反复复用的工作流
+- 已经不再属于单个项目的共享主题
+
+这个动作是显式触发、按需启用的，不会自动把所有项目上下文互相打通。
 
 ## 根规则和项目规则怎么配合
 
@@ -210,7 +255,7 @@
 ### 启动一个长期项目
 
 1. 先把根级 `AGENTS.md` 片段加进去。
-2. 确保 3 个 skills 在你的技能目录里。
+2. 确保 3 个核心 skill 在你的技能目录里。
 3. 当项目达到触发条件时，运行 `codex-memory-bootstrap`。
 
 ### 启动一个新任务
@@ -220,6 +265,10 @@
 ### 结束一个阶段或长线程
 
 运行 `codex-memory-sync`。
+
+### 维护一个显式的全局记忆层
+
+如果你还维护独立的全局记忆层，就从同一个语言包里额外安装 `codex-memory-promote-global`，并且只在你明确要提升稳定跨项目知识时再运行它。
 
 ## 这里说的“跨项目”到底是什么意思
 
@@ -234,12 +283,14 @@
 
 - 同一套触发规则
 - 同一套项目记忆结构
-- 同一套 3 个 skills
+- 同一套核心 skill 包
 - 同一套模板
 
 也就是说：
 
 它复用的是“记忆机制”，不是让不同项目自动共享全部业务上下文。
+
+如果你启用全局提升，那也是显式、按需、可控的，不是自动共享。
 
 ## 从单个 handoff 文件迁移过来
 
