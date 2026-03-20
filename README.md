@@ -65,7 +65,7 @@ That turns "memory that only lives inside chat" into "memory that belongs to the
 If you want to actually use this in Codex, the real setup is very simple:
 
 1. update your root-level `AGENTS.md`
-2. update the project-level `AGENTS.md` for each project that should use structured memory
+2. prepare the project-level `AGENTS.md` for each project, or let bootstrap create it from template
 3. install the skill pack in your preferred language
 4. keep the bundled templates and support files together with those skills
 
@@ -75,19 +75,24 @@ Detailed guide:
 
 ### One-Command Install
 
-Install the English pack:
+Install the English pack (`en` argument):
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
 ```
 
-Install the Simplified Chinese pack:
+Install the Simplified Chinese pack (`zh-CN` argument):
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
 ```
 
-Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default.
+Each command installs the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default, and you can optionally pass a target directory as the second argument.
+
+Choose one language pack per install target:
+
+- `en` for the English pack
+- `zh-CN` for the Simplified Chinese pack
 
 ### Step 1. Update your root-level `AGENTS.md`
 
@@ -117,6 +122,9 @@ It tells Codex:
 - what to read first on a new thread
 - what belongs in `current`, `spec`, `tasks`, and `archive`
 - when `current.md` should be updated
+
+If the project does not already have `AGENTS.md`, `codex-memory-bootstrap` can create the full file from its bundled template.
+If the project already has `AGENTS.md`, bootstrap updates only the managed `CODEX-MEMORY` block and keeps the rest of the file intact.
 
 ### Step 3. Install the skill pack
 
@@ -155,10 +163,11 @@ That is how the generated memory files stay consistent instead of drifting over 
 Typical first run:
 
 1. open a long-running project
-2. make sure project-level `AGENTS.md` is in place
-3. run `codex-memory-bootstrap`
-4. when a new major task appears, run `codex-memory-task-init`
-5. when the phase changes or the thread is ending, run `codex-memory-sync`
+2. make sure the root-level trigger rules are in place
+3. if the project already has `AGENTS.md`, keep it; otherwise let bootstrap create it from template
+4. run `codex-memory-bootstrap`
+5. when a new major task appears, run `codex-memory-task-init`
+6. when the phase changes or the thread is ending, run `codex-memory-sync`
 
 ## The Skill Packs
 
@@ -172,9 +181,10 @@ It will:
 
 - create `.codex-memory/`
 - write the standard files from templates
-- inject or update the project-level `AGENTS.md` memory block
-- migrate an old `codex-handoff.md` into the new structure
-- freeze the legacy handoff instead of deleting it
+- if `AGENTS.md` is missing, write the full project-level file from `templates/project-agents.md`
+- if `AGENTS.md` already exists, update only the managed `CODEX-MEMORY` block defined in `templates/project-agents-block.md`
+- after writing `AGENTS.md`, run `python3 scripts/validate_project_agents.py --project-root <project-root> --mode create` (new file) or `--mode update` (managed block) so the block matches the template verbatim
+- flag an old `codex-handoff.md` as pending migration instead of rewriting or deleting it
 
 ### `codex-memory-task-init`
 

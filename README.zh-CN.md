@@ -67,7 +67,7 @@
 如果你要把这套东西真正装进 Codex，用起来其实就 4 步：
 
 1. 更新你的根级 `AGENTS.md`
-2. 更新每个项目里的 `AGENTS.md`
+2. 准备每个项目里的 `AGENTS.md`，或者让 bootstrap 按模板自动创建
 3. 安装你需要的语言包
 4. 保证模板和配套文件跟 skills 放在一起
 
@@ -77,19 +77,24 @@
 
 ### 一键安装
 
-安装英文包：
+安装英文包（`en` 参数）：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
 ```
 
-安装简体中文包：
+安装简体中文包（`zh-CN` 参数）：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
 ```
 
-这两条命令默认都会把所选技能包安装到 `${CODEX_HOME:-$HOME/.codex}/skills`。
+每条命令都会把所选包安装到 `${CODEX_HOME:-$HOME/.codex}/skills`，也可以额外指定目标目录。
+
+每个安装目标只建议选一个语言包：
+
+- `en` 安装英文包
+- `zh-CN` 安装简体中文包
 
 ### 第 1 步：更新根级 `AGENTS.md`
 
@@ -120,6 +125,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-l
 - 哪些信息该进 `current / spec / tasks / archive`
 - 什么时候要更新 `current.md`
 
+如果项目里还没有 `AGENTS.md`，`codex-memory-bootstrap` 可以直接用自带完整模板创建。
+如果项目里已经有 `AGENTS.md`，bootstrap 只会更新受管控的 `CODEX-MEMORY` 区块，其余内容保留不动。
+
 ### 第 3 步：安装语言包
 
 先选一个语言包：
@@ -149,10 +157,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-l
 第一次使用通常是这样：
 
 1. 打开一个长期项目
-2. 确保项目级 `AGENTS.md` 已经放好
-3. 运行 `codex-memory-bootstrap`
-4. 遇到新的大任务时，运行 `codex-memory-task-init`
-5. 阶段切换或准备结束线程时，运行 `codex-memory-sync`
+2. 先确保根级触发规则已经放好
+3. 如果项目里已经有 `AGENTS.md` 就保留，没有的话让 bootstrap 按模板创建
+4. 运行 `codex-memory-bootstrap`
+5. 遇到新的大任务时，运行 `codex-memory-task-init`
+6. 阶段切换或准备结束线程时，运行 `codex-memory-sync`
 
 ## 技能包里有什么
 
@@ -166,9 +175,10 @@ bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-l
 
 - 创建 `.codex-memory/`
 - 按模板写入标准文件
-- 自动写入或更新项目级 `AGENTS.md` 里的记忆规则块
-- 读取旧的 `codex-handoff.md`，把关键信息迁移进新结构
-- 把旧 handoff 冻结保留，而不是直接删掉
+- 如果项目里没有 `AGENTS.md`，就从 `templates/project-agents.md` 创建完整文件
+- 如果项目里已经有 `AGENTS.md`，就只更新受管控的 `CODEX-MEMORY` 区块
+- 写完后自动做一次校验，确认完整文件或受管控区块符合模板规则
+- 如果发现旧的 `codex-handoff.md`，只标记为“待迁移”，不会直接改写或删除
 
 ### `codex-memory-task-init`
 

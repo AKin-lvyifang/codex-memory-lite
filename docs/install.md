@@ -41,6 +41,9 @@ Its job is to tell Codex:
 - what belongs in `current / spec / tasks / archive`
 - when `current.md` should be updated
 
+If the project does not already have `AGENTS.md`, `codex-memory-bootstrap` can create the full file from its bundled template.
+If the project already has `AGENTS.md`, bootstrap updates only the managed `CODEX-MEMORY` block and keeps the rest of the file intact.
+
 ## How To Install The Skills
 
 ### One-command install
@@ -57,7 +60,12 @@ Install the Simplified Chinese pack:
 bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
 ```
 
-Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default.
+Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default, and you can optionally pass a target directory as the second argument.
+
+Choose one language pack per install target:
+
+- `en` for the English pack
+- `zh-CN` for the Simplified Chinese pack
 
 ### Manual install
 
@@ -83,10 +91,24 @@ Important:
 
 That is what keeps file generation stable and consistent.
 
+## What Bootstrap Now Guarantees
+
+`codex-memory-bootstrap` handles project-level `AGENTS.md` in two modes:
+
+- missing `AGENTS.md`: create the full file from `templates/project-agents.md`
+- existing `AGENTS.md`: update only the managed `CODEX-MEMORY` block
+
+After writing, it runs `scripts/validate_project_agents.py`:
+
+- `--mode create` checks that the full file matches the bundled full template
+- `--mode update` checks that the managed block matches `templates/project-agents-block.md`
+
+If bootstrap finds an older `codex-handoff.md`, it should keep that file untouched and mark it for a separate migration step instead of rewriting it automatically.
+
 ## Recommended First-Time Setup
 
 1. put the root snippet into your root `AGENTS.md`
-2. put the project snippet into a project's `AGENTS.md`
+2. if a project already has `AGENTS.md`, keep it; otherwise let bootstrap create it from template
 3. install the 3 core skills from one language pack
 4. open the project in Codex
 5. run `codex-memory-bootstrap`
