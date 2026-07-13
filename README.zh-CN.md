@@ -1,382 +1,138 @@
+<a href="https://github.com/AKin-lvyifang/codex-memory-lite">
+  <img width="1280" alt="Codex Memory Lite v2.0.0，面向 Codex 的自动项目记忆。" src="docs/images/codex-memory-lite-v2.0.0.png">
+</a>
+
+<p align="center">
+  <a href="#安装">安装</a> ·
+  <a href="#工作原理">工作原理</a> ·
+  <a href="#常用命令">常用命令</a> ·
+  <a href="docs/install.zh-CN.md">完整文档</a> ·
+  <a href="README.md">English</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v2.0.0-167D73?style=flat-square" alt="版本 v2.0.0">
+  <img src="https://img.shields.io/badge/runtime-Node.js_18%2B-2F6F4E?style=flat-square" alt="Node.js 18 或更高版本">
+  <img src="https://img.shields.io/badge/platform-ChatGPT_%2F_Codex-1F2937?style=flat-square" alt="ChatGPT 和 Codex">
+  <img src="https://img.shields.io/badge/license-MIT-D97706?style=flat-square" alt="MIT License">
+</p>
+
 # Codex Memory Lite
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+一套面向长期项目的自动记忆系统。它把真正影响后续工作的进度、决定和约束写进项目的 `.codex-memory/`，不会把每轮聊天都堆成长日志。
 
-让 Codex 在长项目里不那么容易“失忆”。
-
-这个项目的做法不是继续把所有信息都塞在聊天记录里，而是在每个项目内部放一层轻量、结构化的记忆文件，让 Codex 需要时按顺序读取。
-
-这个包主要适合：
-
-- 长周期项目里的长记忆
-- 同一个项目里跨线程、跨会话续跑
-- 通过“只读必要入口文件”来减少 token 消耗
-- 在不同项目之间复用同一套规则、skills 和模板
-
-## 它解决什么问题
-
-当一个会话越来越长时，通常会同时出现这 3 个问题：
-
-1. 聊天上下文越来越大。
-2. 自动压缩会丢掉有用信息。
-3. 单个 `codex-handoff.md` 会越写越大，当前状态、长期规范、任务细节、旧历史全混在一起。
-
-这个 starter 的核心思路，就是把记忆拆成 4 层：
-
-- `current.md`
-  - 只放当前真正生效的状态
-- `spec/`
-  - 放跨会话仍然稳定有效的规则
-- `tasks/`
-  - 每个长期任务单独建文件夹
-- `archive/`
-  - 放历史记录，便于回查，但不默认污染当前上下文
-
-## 核心原理
-
-不要把所有内容都堆在一个交接文件里。
-
-而是改成：
-
-- 当前工作写进 `current.md`
-- 长期规则写进 `spec/`
-- 每个大任务单独建任务文件夹
-- 旧进度和旧历史移到 `archive/`
-
-这样，原本“只存在聊天里的记忆”，就会变成“属于项目本身的记忆”。
-
-## 仓库里有什么
-
-- `snippets/`
-  - 根级和项目级 `AGENTS.md` 片段，用来让 Codex 知道什么时候启用这套结构化记忆
-- `skills/`
-  - 英文可安装包，包含 3 个核心项目记忆 skill 和 1 个可选的全局提升 skill
-- `skills.zh-CN/`
-  - 简体中文可安装镜像包，包含同样的 4 个 skill
-- `templates/`
-  - 这一整套记忆文件的标准模板
-- `scripts/`
-  - 一键安装脚本，可按语言安装英文包或中文版
-- `examples/demo-project/`
-  - 一个已经完成迁移的示例项目
-- `docs/`
-  - 更详细的说明、安装步骤和迁移规则
-
-## 5 分钟安装
-
-如果你要把这套东西真正装进 Codex，用起来其实就 4 步：
-
-1. 更新你的根级 `AGENTS.md`
-2. 准备每个项目里的 `AGENTS.md`，或者让 bootstrap 按模板自动创建
-3. 安装你需要的语言包
-4. 保证模板和配套文件跟 skills 放在一起
-
-详细安装看：
-
-- [docs/install.md](docs/install.md)
-
-### 一键安装
-
-安装英文包（`en` 参数）：
+<a id="安装"></a>
+## 安装
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
 ```
 
-安装简体中文包（`zh-CN` 参数）：
+安装后新建一个 task，或重启 ChatGPT / Codex。第一次在项目里发送消息时，记忆会自动初始化。
+
+**不想自己执行命令？把这句话发给 Agent：**
+
+> 请从 https://github.com/AKin-lvyifang/codex-memory-lite 安装最新版 Codex Memory Lite；使用仓库的一键安装器，保留我已有的 Hook、MCP、Skill 和配置，安装后运行 doctor，并告诉我是否需要重启 ChatGPT。
+
+也可以使用 `curl`：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
+curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install.sh | sh
 ```
 
-每条命令都会把所选包安装到 `${CODEX_HOME:-$HOME/.codex}/skills`，也可以额外指定目标目录。
+安装器会先备份受影响文件，再把自己的 8 个 Hook 合并进现有配置。其他 Hook、MCP、Skill 和项目记忆都会保留。
 
-每个安装目标只建议选一个语言包：
+## V2 解决了什么
 
-- `en` 安装英文包
-- `zh-CN` 安装简体中文包
+- **自动初始化**：首轮 Hook 自动识别项目并创建或迁移 `.codex-memory/`，不再占用项目 `AGENTS.md`。
+- **有价值才整理**：Hook 会观察关键生命周期，但只有出现长期信号、文件变化、压缩检查点或积压阈值时，才启动记忆整理员。
+- **判断和写入分离**：只读 Curator 负责判断 `write / skip / unresolved`，确定性脚本负责校验和落盘。
+- **写坏可恢复**：通过校验和、事务、版本号和原子写入，避免半写入和静默覆盖。
+- **空间有边界**：临时运行数据在完成处置后可清理；已经确认的长期记忆不会被自动删除。
 
-### 第 1 步：更新根级 `AGENTS.md`
+<a id="工作原理"></a>
+## 工作原理
 
-把下面这个片段加进你的根级规则里：
+```text
+Codex 生命周期事件
+        ↓
+Hook 记录一条经过脱敏的小事件
+        ↓
+触发门判断是否值得整理
+        ↓
+只读 Curator 判断哪些信息值得长期保存
+        ↓
+memoryctl 校验覆盖率、路径和版本
+        ↓
+原子更新 .codex-memory/
+```
 
-- [snippets/GLOBAL-AGENTS-SNIPPET.md](snippets/GLOBAL-AGENTS-SNIPPET.md)
+默认 Curator 使用 `gpt-5.6-sol` 和低推理强度。如果该模型不可用，V2 可以继承当前 task 的模型，并在诊断信息里记录回退结果。
 
-这一层是“触发层”。
+只有真实写入时才会显示一行提示，例如 `已记录：任务进度`；没有长期价值时保持安静。
 
-它会告诉 Codex：
+完整机制见 [V2 如何工作](docs/how-it-works.zh-CN.md)。
 
-- 什么情况下应该切换到结构化记忆
-- 什么时候创建 `.codex-memory/`
-- 什么时候初始化任务文件夹
-- 什么时候把最新进展同步回记忆文件
+## 日常使用
 
-### 第 2 步：更新项目级 `AGENTS.md`
+1. 打开 Git 项目，或包含常见项目标记的文件夹。
+2. 继续做真实任务，不需要手动初始化或同步记忆。
+3. 想看进度、决定或历史时，直接让 Codex 查看项目记忆。
+4. 如果 Hook 没有运行或同步报错，再执行 `doctor`。
 
-把下面这个片段加进项目里的 `AGENTS.md`：
-
-- [snippets/PROJECT-AGENTS-SNIPPET.md](snippets/PROJECT-AGENTS-SNIPPET.md)
-
-这一层是“项目读取层”。
-
-它会告诉 Codex：
-
-- 新线程进项目后先读什么
-- 哪些信息该进 `current / spec / tasks / archive`
-- 什么时候要更新 `current.md`
-
-如果项目里还没有 `AGENTS.md`，`codex-memory-bootstrap` 可以直接用自带完整模板创建。
-如果项目里已经有 `AGENTS.md`，bootstrap 只会更新受管控的 `CODEX-MEMORY` 区块，其余内容保留不动。
-
-### 第 3 步：安装语言包
-
-先选一个语言包：
-
-- 英文包：`skills/`
-- 简体中文包：`skills.zh-CN/`
-
-每个语言包都包含这 3 个核心 skill：
-
-- `codex-memory-bootstrap`
-- `codex-memory-task-init`
-- `codex-memory-sync`
-
-可选的跨项目 skill：
-
-- `codex-memory-promote-global`
-
-关键点有两个：
-
-- 不是只复制 `SKILL.md`
-- 每个 skill 自己的 `templates/`、`references/`、`scripts/` 等配套文件也必须一起放
-
-只有这样，后面自动生成出来的记忆文件才会稳定，不会越跑越歪。
-
-### 第 4 步：开始使用
-
-第一次使用通常是这样：
-
-1. 打开一个长期项目
-2. 先确保根级触发规则已经放好
-3. 如果项目里已经有 `AGENTS.md` 就保留，没有的话让 bootstrap 按模板创建
-4. 运行 `codex-memory-bootstrap`
-5. 遇到新的大任务时，运行 `codex-memory-task-init`
-6. 阶段切换或准备结束线程时，运行 `codex-memory-sync`
-
-## 技能包里有什么
-
-### 3 个核心项目记忆 skill
-
-### `codex-memory-bootstrap`
-
-适合在项目开始变长、信息变杂、明显会跨会话时使用。
-
-它会：
-
-- 创建 `.codex-memory/`
-- 按模板写入标准文件
-- 如果项目里没有 `AGENTS.md`，就从 `templates/project-agents.md` 创建完整文件
-- 如果项目里已经有 `AGENTS.md`，就只更新受管控的 `CODEX-MEMORY` 区块
-- 写完后自动做一次校验，确认完整文件或受管控区块符合模板规则
-- 如果发现旧的 `codex-handoff.md`，只标记为“待迁移”，不会直接改写或删除
-
-### `codex-memory-task-init`
-
-适合在出现一个新的长期任务时使用。
-
-它会创建：
-
-- `brief.md`
-- `decisions.md`
-- `refs.md`
-
-### `codex-memory-sync`
-
-适合在项目阶段变化、上下文变大、或者你准备结束一个长线程时使用。
-
-它会把下面这些内容同步到最新状态：
-
-- `current.md`
-- 活跃任务文件
-- archive 记录
-
-### 1 个可选的跨项目 skill
-
-#### `codex-memory-promote-global`
-
-适合在你明确要维护“全局记忆层”时使用。
-
-它会帮助你把这些内容提升出去：
-
-- 跨项目仍然成立的稳定规则
-- 会反复复用的工作流
-- 已经不再属于单个项目的共享主题
-
-这个动作是显式触发、按需启用的，不会自动把所有项目上下文互相打通。
-
-## 根规则和项目规则怎么配合
-
-### 根级规则
-
-根级 `AGENTS.md` 决定：
-
-什么时候应该启用结构化记忆。
-
-常见触发条件：
-
-- 工作会跨多个会话继续
-- 涉及多个文件或多个话题
-- 交接信息已经开始堆积
-- 上下文明显在膨胀
-
-### 项目级规则
-
-项目级 `AGENTS.md` 决定：
-
-进入这个项目后，Codex 应该先读哪些记忆文件。
-
-推荐读取顺序：
-
-1. `.codex-memory/current.md`
-2. `.codex-memory/spec/index.md`
-3. 如果有活跃任务，再读 `.codex-memory/tasks/index.md` 和对应任务的 `brief.md`
-
-## 推荐目录结构
+V2 使用以下结构：
 
 ```text
 .codex-memory/
-├── current.md
-├── spec/
-│   ├── index.md
-│   ├── design-rules.md
-│   ├── frontend-design-standards.md
-│   ├── frontend-page-workflow.md
-│   ├── component-reuse.md
-│   └── workflow-rules.md
-├── tasks/
-│   ├── index.md
-│   ├── active/
-│   └── archive/
-└── archive/
+├── current.md            # 当前有效状态
+├── spec/                 # 稳定项目规则
+├── tasks/                # 活跃任务和已归档任务
+├── archive/              # 历史记忆
+├── manifest.json         # 结构和版本信息
+└── .runtime/             # 待处理事件与可恢复事务
 ```
 
-## 日常怎么用
+<a id="常用命令"></a>
+## 常用命令
 
-### 启动一个长期项目
+```bash
+# 更新，不覆盖其他配置
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
 
-1. 先把根级 `AGENTS.md` 片段加进去。
-2. 确保 3 个核心 skill 在你的技能目录里。
-3. 当项目达到触发条件时，运行 `codex-memory-bootstrap`。
+# 检查 Skill、Hook、信任状态、配置和项目运行台账
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
 
-### 启动一个新任务
+# 卸载运行组件，默认保留 V2 配置和所有项目记忆
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+```
 
-运行 `codex-memory-task-init`。
+如果 Codex 主目录不是默认的 `~/.codex`，可使用 `--codex-home PATH` 或设置 `CODEX_HOME=/path`。版本锁定、备份位置和完整参数见 [安装与配置](docs/install.zh-CN.md)。
 
-### 结束一个阶段或长线程
+## 安全边界
 
-运行 `codex-memory-sync`。
+- 安装和卸载都不会删除任何项目的 `.codex-memory/`。
+- 修改前会备份已有 `hooks.json`、`config.toml`、V2 配置和已安装的 `codex-memory` Skill。
+- 安装器只管理 1 个 Skill、1 个启动 Hook 脚本和 8 个命令 Hook，不会重写 MCP 配置或项目 `AGENTS.md`。
+- Curator 输入可能包含当前 Prompt、精简后的工具影响、最终回答、工作区变化和相关记忆文件。常见密钥格式会先脱敏，但仍不建议把秘密写进 Prompt 或记忆。
+- V1 Skill 和旧 `AGENTS.md` 记忆区块会被保留，不会偷偷删除。请按 [V1 迁移指南](docs/migration-v1.zh-CN.md) 主动退出旧流程。
 
-### 维护一个显式的全局记忆层
+## 文档
 
-如果你还维护独立的全局记忆层，就从同一个语言包里额外安装 `codex-memory-promote-global`，并且只在你明确要提升稳定跨项目知识时再运行它。
+- [安装与配置](docs/install.zh-CN.md)
+- [V2 如何工作](docs/how-it-works.zh-CN.md)
+- [从 V1 迁移](docs/migration-v1.zh-CN.md)
+- [English installation guide](docs/install.md)
 
-## 这里说的“跨项目”到底是什么意思
+## 本地开发
 
-这点必须讲清楚，不然很容易被误解。
+```bash
+npm test
+npm run package:release
+npm run verify:release
+```
 
-这套方案最擅长的是：
+`verify:release` 会检查压缩包内容和 SHA256，再在隔离目录里真实执行安装、诊断和卸载。
 
-- 同一个项目里的跨线程续跑
-- 同一个项目里的跨会话续跑
+## 许可证
 
-所谓“跨项目复用”，真正复用的是：
-
-- 同一套触发规则
-- 同一套项目记忆结构
-- 同一套核心 skill 包
-- 同一套模板
-
-也就是说：
-
-它复用的是“记忆机制”，不是让不同项目自动共享全部业务上下文。
-
-如果你启用全局提升，那也是显式、按需、可控的，不是自动共享。
-
-## 从单个 handoff 文件迁移过来
-
-推荐的迁移路由是：
-
-- 当前仍然生效的信息 -> `current.md`
-- 重复出现、长期有效的规则 -> `spec/`
-- 仍在推进中的长期任务 -> `tasks/active/<task>/`
-- 已经过时但需要留档的历史 -> `archive/`
-
-旧的 `codex-handoff.md` 会保留为冻结参考，但不再作为主入口。
-
-具体路由规则可以看：
-
-- [docs/migration-guide.md](docs/migration-guide.md)
-
-## 示例
-
-可以直接看：
-
-- [examples/demo-project](examples/demo-project)
-
-这个示例里包含：
-
-- 一个项目级 `AGENTS.md`
-- 一个冻结保留的旧 `codex-handoff.md`
-- 一套已经运行起来的 `.codex-memory/`
-- 一个带 `brief / decisions / refs` 的示例任务
-
-## 截图
-
-- [Storyboard Preview](docs/screenshots/codex-memory-story-preview.png)
-- [Slide 01](docs/screenshots/codex-memory-story-01.png)
-- [Slide 02](docs/screenshots/codex-memory-story-02.png)
-- [Slide 03](docs/screenshots/codex-memory-story-03.png)
-- [Slide 04](docs/screenshots/codex-memory-story-04.png)
-- [Slide 05](docs/screenshots/codex-memory-story-05.png)
-- [Slide 06](docs/screenshots/codex-memory-story-06.png)
-- [Slide 07](docs/screenshots/codex-memory-story-07.png)
-- [Slide 08](docs/screenshots/codex-memory-story-08.png)
-
-## 常见问题
-
-### 这是不是在替代 Codex 自己的上下文
-
-不是。
-
-它是在减轻聊天上下文的压力，把长期信息搬到项目文件里。
-
-### 这会不会让项目更复杂
-
-初始化时会多一点结构，但长期来看，反而更容易续跑和接手。
-
-### 每个小问题都要用它吗
-
-不用。
-
-它适合的是长任务、多文件、多话题、跨会话的工作，不适合一次性小问题。
-
-### archive 要不要默认读取
-
-不要。
-
-archive 是拿来追历史的，不应该变成默认启动上下文。
-
-## 对外分享前的检查清单
-
-在你发布自己的版本前，最好先检查：
-
-- 去掉私人绝对路径
-- 去掉私人业务名、节点号、账号信息
-- 根规则里只保留跟记忆系统有关的部分
-- 示例文件确认已经脱敏
-
-## License
-
-这个 starter 默认使用 MIT 协议。
-
-如果你的场景有别的要求，可以自行替换。
+Codex Memory Lite 使用 [MIT License](LICENSE) 开源。

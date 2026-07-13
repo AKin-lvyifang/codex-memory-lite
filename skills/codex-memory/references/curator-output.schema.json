@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "outcome",
+    "summary",
+    "updated_categories",
+    "candidates",
+    "files",
+    "unresolved"
+  ],
+  "properties": {
+    "outcome": {
+      "type": "string",
+      "enum": ["write", "no-op"]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "updated_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "progress",
+          "decision",
+          "next_step",
+          "constraint",
+          "reference",
+          "task_status",
+          "other"
+        ]
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "candidate_id",
+          "category",
+          "disposition",
+          "target",
+          "source_event_ids",
+          "reason"
+        ],
+        "properties": {
+          "candidate_id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "progress",
+              "decision",
+              "next_step",
+              "constraint",
+              "reference",
+              "task_status",
+              "skip",
+              "other"
+            ]
+          },
+          "disposition": {
+            "type": "string",
+            "enum": ["write", "skip", "unresolved"]
+          },
+          "target": {
+            "type": ["string", "null"]
+          },
+          "source_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "content"],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

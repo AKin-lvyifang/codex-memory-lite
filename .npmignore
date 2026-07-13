@@ -1,0 +1,5 @@
+release/
+tests/
+skills/codex-memory/tests/
+**/__pycache__/
+*.pyc

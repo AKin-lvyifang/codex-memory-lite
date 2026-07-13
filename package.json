@@ -1,0 +1,48 @@
+{
+  "name": "codex-memory-lite",
+  "version": "2.0.0",
+  "description": "Automatic, project-scoped memory for Codex with safe hooks, recovery, and one-command installation.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AKin-lvyifang/codex-memory-lite.git"
+  },
+  "homepage": "https://github.com/AKin-lvyifang/codex-memory-lite#readme",
+  "bugs": "https://github.com/AKin-lvyifang/codex-memory-lite/issues",
+  "bin": {
+    "codex-memory-lite": "bin/codex-memory-lite.js"
+  },
+  "files": [
+    "ai/hooks/",
+    "bin/",
+    "config/",
+    "docs/",
+    "lib/",
+    "CHANGELOG.md",
+    "CHANGELOG.zh-CN.md",
+    "README.zh-CN.md",
+    "scripts/install.sh",
+    "skills/codex-memory/SKILL.md",
+    "skills/codex-memory/agents/",
+    "skills/codex-memory/references/",
+    "skills/codex-memory/scripts/",
+    "VERSION"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.js && python3 -m unittest discover -s skills/codex-memory/tests -v",
+    "test:installer": "node --test tests/*.test.js",
+    "test:skill": "python3 -m unittest discover -s skills/codex-memory/tests -v",
+    "package:release": "node scripts/package-release.mjs",
+    "verify:release": "node scripts/verify-release.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "codex",
+    "memory",
+    "agent",
+    "hooks",
+    "openai"
+  ]
+}

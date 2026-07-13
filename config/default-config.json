@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "mode": "fleet",
+  "locale": "auto",
+  "project_roots": [],
+  "excluded_project_roots": [],
+  "ignored_memory_roots": [],
+  "visibility": "balanced",
+  "curator": {
+    "preferred_model": "gpt-5.6-sol",
+    "reasoning_effort": "low",
+    "fallback_model_policy": "inherit",
+    "timeout_seconds": 240
+  },
+  "sync": {
+    "active_task_event_threshold": 12,
+    "max_pending_age_seconds": 1800,
+    "max_event_chars": 12000
+  },
+  "storage": {
+    "runtime_soft_limit_mb": 20,
+    "project_soft_limit_mb": 50,
+    "failed_transaction_limit": 3,
+    "hot_task_days": 90
+  }
+}

@@ -1,170 +1,165 @@
-# Install Guide
+# Installation And Configuration
 
-## Goal
+[简体中文](install.zh-CN.md)
 
-Make Codex use this structured memory system in real projects.
+This guide installs Codex Memory Lite V2 into a Codex-compatible ChatGPT/Codex environment, verifies the Hook configuration, and explains how to update or remove it without deleting project memory.
 
-The install is basically just three things:
+## Requirements
 
-1. update the right `AGENTS.md` files
-2. install the skill pack in your preferred language
-3. keep the templates and support files together with the skills
+- macOS or Linux
+- Node.js 18 or newer, including `npx`
+- Python 3
+- Git
+- Codex CLI available in `PATH`
+- A ChatGPT/Codex build that supports command Hooks
 
-## What You Need To Update
-
-### 1. Root-level `AGENTS.md`
-
-Add the snippet from:
-
-- `snippets/GLOBAL-AGENTS-SNIPPET.md`
-
-Use this in the root place where your Codex environment keeps global rules.
-
-Its job is to tell Codex:
-
-- when to enable structured memory
-- when to initialize project memory
-- when to initialize a task folder
-- when to sync memory back into files
-
-### 2. Project-level `AGENTS.md`
-
-Add the snippet from:
-
-- `snippets/PROJECT-AGENTS-SNIPPET.md`
-
-Use this inside each project that should have structured memory.
-
-Its job is to tell Codex:
-
-- what files to read first on a new thread
-- what belongs in `current / spec / tasks / archive`
-- when `current.md` should be updated
-
-If the project does not already have `AGENTS.md`, `codex-memory-bootstrap` can create the full file from its bundled template.
-If the project already has `AGENTS.md`, bootstrap updates only the managed `CODEX-MEMORY` block and keeps the rest of the file intact.
-
-## How To Install The Skills
-
-### One-command install
-
-Install the English pack:
+Check the main prerequisites:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) en
+node --version
+python3 --version
+git --version
+codex --version
 ```
 
-Install the Simplified Chinese pack:
+## One-Command Install
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install-skill-pack.sh) zh-CN
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
 ```
 
-Both commands install the selected pack into `${CODEX_HOME:-$HOME/.codex}/skills` by default, and you can optionally pass a target directory as the second argument.
+The command installs from the repository's current `main` branch. Pin a release when reproducibility matters:
 
-Choose one language pack per install target:
-
-- `en` for the English pack
-- `zh-CN` for the Simplified Chinese pack
-
-### Manual install
-
-Choose one language pack:
-
-- English pack: `skills/`
-- Simplified Chinese pack: `skills.zh-CN/`
-
-Each language pack includes these 3 core skills:
-
-- `codex-memory-bootstrap`
-- `codex-memory-task-init`
-- `codex-memory-sync`
-
-Optional cross-project skill:
-
-- `codex-memory-promote-global`
-
-Important:
-
-- do not copy only `SKILL.md`
-- keep each skill's `templates/`, `references/`, `scripts/`, and other support files beside it when they exist
-
-That is what keeps file generation stable and consistent.
-
-## What Bootstrap Now Guarantees
-
-`codex-memory-bootstrap` handles project-level `AGENTS.md` in two modes:
-
-- missing `AGENTS.md`: create the full file from `templates/project-agents.md`
-- existing `AGENTS.md`: update only the managed `CODEX-MEMORY` block
-
-After writing, it runs `scripts/validate_project_agents.py`:
-
-- `--mode create` checks that the full file matches the bundled full template
-- `--mode update` checks that the managed block matches `templates/project-agents-block.md`
-
-If bootstrap finds an older `codex-handoff.md`, it should keep that file untouched and mark it for a separate migration step instead of rewriting it automatically.
-
-## Recommended First-Time Setup
-
-1. put the root snippet into your root `AGENTS.md`
-2. if a project already has `AGENTS.md`, keep it; otherwise let bootstrap create it from template
-3. install the 3 core skills from one language pack
-4. open the project in Codex
-5. run `codex-memory-bootstrap`
-
-After that:
-
-- when a new major task appears, run `codex-memory-task-init`
-- when a phase changes or a long thread is ending, run `codex-memory-sync`
-- if you maintain a separate global memory layer, optionally install and run `codex-memory-promote-global`
-
-## Recommended File Layout
-
-```text
-.codex-memory/
-├── current.md
-├── spec/
-├── tasks/
-└── archive/
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite install
 ```
 
-## Typical Startup Read Order
+Alternative `curl` entry:
 
-When a new thread enters a project, the intended read order is:
+```bash
+curl -fsSL https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/main/scripts/install.sh | sh
+```
 
-1. `.codex-memory/current.md`
-2. `.codex-memory/spec/index.md`
-3. if there is an active task, `.codex-memory/tasks/index.md`
-4. then the active task `brief.md`
+The script calls the same `npx` installer. Review [scripts/install.sh](../scripts/install.sh) before piping it to a shell if that is part of your security policy.
 
-This is what helps reduce token usage:
+## Let An Agent Install It
 
-- read the small entry files first
-- do not load historical material by default
-- only open `archive/` when tracing old decisions is actually needed
+Send this as one message to an Agent that can operate your local machine:
 
-## Common Mistakes
+> Install the latest Codex Memory Lite from https://github.com/AKin-lvyifang/codex-memory-lite using its one-command installer; preserve my existing Hooks, MCP servers, Skills, and config, run doctor, and tell me whether ChatGPT needs a restart.
 
-### Mistake 1: Only creating `.codex-memory/` without rules
+The Agent should report the target Codex home, backup path, doctor result, and whether a restart or new task is required.
 
-If you do not update `AGENTS.md`, Codex may never read the memory files in the correct order.
+## What The Installer Changes
 
-### Mistake 2: Installing only the skill prompts
+Default target: `${CODEX_HOME:-$HOME/.codex}`.
 
-If you forget the templates, generated files can drift and become inconsistent.
+| Path | Action |
+| --- | --- |
+| `skills/codex-memory/` | Install or replace the V2 runtime Skill after backup |
+| `ai/hooks/codex-memory-bootstrap-first-prompt.js` | Install the automatic project bootstrap Hook |
+| `hooks.json` | Merge eight V2 command handlers; preserve other handlers and top-level data |
+| `config.toml` | Enable `[features].hooks` and add trust hashes for V2 handlers |
+| `memory-v2/config.json` | Preserve existing values and add missing V2 defaults |
+| `backups/codex-memory-lite/<timestamp>/` | Save every affected existing file before mutation |
 
-### Mistake 3: Loading `archive/` by default
+The installer does not rewrite MCP settings, unrelated Skills, project `AGENTS.md`, or any project `.codex-memory/` directory.
 
-That brings old context back into the main thread and defeats part of the token-saving benefit.
+## Custom Codex Home
 
-## Best Use Cases
+Use either form:
 
-Use this when work is:
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --codex-home "/custom/codex-home"
+```
 
-- long-running
-- multi-file
-- multi-topic
-- likely to continue across sessions or threads
+```bash
+CODEX_HOME="/custom/codex-home" \
+  npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+```
 
-Do not force it on every tiny one-off question.
+Run ChatGPT/Codex with the same `CODEX_HOME`; otherwise the application will load a different Hook configuration.
+
+## Activate And Verify
+
+1. Start a new task or restart ChatGPT/Codex.
+2. Open a project and send the first normal prompt.
+3. Run doctor:
+
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
+```
+
+A healthy result confirms the Skill files, eight handlers, trust hashes, Hook feature, configuration, and fleet report command. A project is registered only after its first prompt.
+
+## Configuration
+
+V2 config is stored in `${CODEX_HOME:-$HOME/.codex}/memory-v2/config.json`.
+
+Important fields:
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `enabled` | `true` | Global V2 switch |
+| `project_roots` | `[]` | Projects registered automatically by the first-prompt Hook |
+| `excluded_project_roots` | `[]` | Exact project roots V2 must skip |
+| `curator.preferred_model` | `gpt-5.6-sol` | Preferred read-only Curator model |
+| `curator.reasoning_effort` | `low` | Favors fast memory classification |
+| `curator.fallback_model_policy` | `inherit` | Fall back to the active task model when available |
+| `sync.active_task_event_threshold` | `12` | Pending-event threshold for active tasks |
+| `sync.max_pending_age_seconds` | `1800` | Maximum pending age before active-task review |
+| `storage.runtime_soft_limit_mb` | `20` | Runtime-data warning threshold |
+| `storage.project_soft_limit_mb` | `50` | Total project-memory warning threshold |
+
+To keep a project outside V2, add its exact absolute path to `excluded_project_roots`. Do not delete its memory just to disable automation.
+
+## Update
+
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
+```
+
+Update runs the same backup-and-merge process as install. Existing custom config values remain authoritative; only missing defaults are added.
+
+## Uninstall
+
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+```
+
+Default uninstall removes the owned Skill, bootstrap script, Hook handlers, and their trust entries. It keeps V2 config and all project memory.
+
+Remove the V2 config as well:
+
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall --purge-config
+```
+
+Even with `--purge-config`, project `.codex-memory/` directories are not deleted.
+
+## Dry Run And JSON Output
+
+```bash
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --dry-run
+npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor --json
+```
+
+Use `--json` for Agent automation and machine-readable checks.
+
+## Common Problems
+
+### `codex is not available in PATH`
+
+Install or update Codex CLI, then confirm `codex --version` works in the same shell. Memory files can be installed without it, but Curator review cannot run.
+
+### Hooks are installed but no project is registered
+
+Start a new task or restart the application, enter the project, and send one prompt. The bootstrap Hook runs on the first prompt rather than during installation.
+
+### An old V1 Skill still appears
+
+The installer preserves old Skills deliberately. Follow [Migrate from V1](migration-v1.md) to retire legacy routing after confirming V2 is healthy.
+
+### Doctor reports an untrusted or modified Hook
+
+Run `update` to regenerate the V2 handlers and trust hashes. If the problem remains, inspect the latest backup and verify that another tool is not rewriting `hooks.json` or `config.toml`.

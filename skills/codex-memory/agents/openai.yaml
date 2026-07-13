@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Memory V2"
+  short_description: "自动维护、恢复和审计项目级长期记忆，支持无感同步与故障恢复"
+  default_prompt: "Use $codex-memory to inspect and recover this project memory."
