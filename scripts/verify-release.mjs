@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const release = path.join(root, "release");
+const stableTgz = path.join(release, "codex-memory-lite.tgz");
 const tgz = path.join(release, `codex-memory-lite-${pkg.version}.tgz`);
 const zip = path.join(release, `codex-memory-lite-${pkg.version}.zip`);
 const sumsFile = path.join(release, "SHA256SUMS");
@@ -30,7 +31,7 @@ function sha256(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 }
 
-for (const file of [tgz, zip, sumsFile]) {
+for (const file of [stableTgz, tgz, zip, sumsFile]) {
   if (!fs.existsSync(file)) throw new Error(`missing release asset: ${file}`);
 }
 
@@ -39,7 +40,7 @@ const expected = new Map(fs.readFileSync(sumsFile, "utf8").trim().split("\n").ma
   if (!match) throw new Error(`invalid SHA256SUMS line: ${line}`);
   return [match[2], match[1]];
 }));
-for (const file of [tgz, zip]) {
+for (const file of [stableTgz, tgz, zip]) {
   if (expected.get(path.basename(file)) !== sha256(file)) throw new Error(`checksum mismatch: ${file}`);
 }
 
@@ -55,6 +56,9 @@ for (const entry of [...tarEntries, ...zipEntries]) {
 
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "codex-memory-release-verify-"));
 try {
+  if (!fs.readFileSync(stableTgz).equals(fs.readFileSync(tgz))) {
+    throw new Error("stable TGZ does not match the versioned TGZ");
+  }
   const bin = path.join(temporary, "bin");
   const codexHome = path.join(temporary, "Codex Home");
   const inspected = path.join(temporary, "inspected");
@@ -96,7 +100,7 @@ try {
 
   const packageArgs = ["--yes", `--package=${tgz}`, "codex-memory-lite"];
   run("sh", [path.join(root, "scripts", "install.sh")], {
-    env: { ...env, CODEX_HOME: codexHome, CODEX_MEMORY_PACKAGE: tgz },
+    env: { ...env, CODEX_HOME: codexHome, CODEX_MEMORY_PACKAGE: stableTgz },
   });
   const doctor = JSON.parse(run("npx", [...packageArgs, "doctor", "--codex-home", codexHome, "--json"], { env }));
   if (!doctor.healthy) throw new Error(`installed package doctor failed: ${JSON.stringify(doctor.issues)}`);

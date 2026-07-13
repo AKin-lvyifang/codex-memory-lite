@@ -29,6 +29,8 @@ function run(command, args, options = {}) {
 
 const packed = JSON.parse(run("npm", ["pack", "--pack-destination", release, "--json"], { capture: true }));
 const tgz = path.join(release, packed[0].filename);
+const stableTgz = path.join(release, "codex-memory-lite.tgz");
+fs.copyFileSync(tgz, stableTgz);
 fs.mkdirSync(staging, { recursive: true });
 run("tar", ["-xzf", tgz, "-C", staging]);
 const packageFolder = path.join(staging, "package");
@@ -52,7 +54,7 @@ function sha256(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 }
 
-const assets = [tgz, zip];
+const assets = [stableTgz, tgz, zip];
 const sums = assets.map((file) => `${sha256(file)}  ${path.basename(file)}`).join("\n");
 fs.writeFileSync(path.join(release, "SHA256SUMS"), `${sums}\n`);
 fs.rmSync(staging, { recursive: true, force: true });

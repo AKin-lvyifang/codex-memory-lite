@@ -21,7 +21,7 @@ Do not delete `.codex-memory/` or the old handoff file to migrate.
 1. Install V2:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite install
 ```
 
 2. Start a new task or restart ChatGPT/Codex.
@@ -30,7 +30,7 @@ npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-l
 5. Run doctor:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite doctor
 ```
 
 6. Ask the Agent to show the current project progress and confirm that current/task/spec files remain readable.
@@ -92,7 +92,7 @@ ${CODEX_HOME:-$HOME/.codex}/backups/codex-memory-lite/
 To stop V2 without touching projects:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite uninstall
 ```
 
 This removes the V2 runtime and owned Hook entries but keeps `memory-v2/config.json` and every project `.codex-memory/`. Restore legacy routing only if you intentionally return to V1.

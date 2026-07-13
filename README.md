@@ -25,7 +25,7 @@ Automatic, project-scoped memory for long-running Codex work. It records durable
 ## Install
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
 Start a new task or restart ChatGPT/Codex after installation. The first prompt inside a project initializes memory automatically.
@@ -97,13 +97,13 @@ V2 keeps this structure:
 
 ```bash
 # Update without overwriting unrelated configuration
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite update
 
 # Verify the installed Skill, Hooks, trust hashes, config, and fleet status
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor
 
 # Remove the installed runtime; keep V2 config and every project memory folder
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall
 ```
 
 Use `--codex-home PATH` for a non-default Codex home. `CODEX_HOME=/path` also works. See [Installation and configuration](docs/install.md) for version pinning, backup locations, and all options.

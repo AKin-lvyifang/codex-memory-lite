@@ -2,7 +2,7 @@
 
 set -eu
 
-PACKAGE_SPEC="${CODEX_MEMORY_PACKAGE:-github:AKin-lvyifang/codex-memory-lite}"
+PACKAGE_SPEC="${CODEX_MEMORY_PACKAGE:-https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz}"
 
 if ! command -v node >/dev/null 2>&1; then
   printf '%s\n' "Codex Memory Lite requires Node.js 18 or newer." >&2

@@ -25,13 +25,13 @@ codex --version
 ## One-Command Install
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
-The command installs from the repository's current `main` branch. Pin a release when reproducibility matters:
+The command follows the latest stable GitHub Release without cloning repository history. Pin a release when reproducibility matters:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite install
 ```
 
 Alternative `curl` entry:
@@ -70,12 +70,12 @@ The installer does not rewrite MCP settings, unrelated Skills, project `AGENTS.m
 Use either form:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --codex-home "/custom/codex-home"
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install --codex-home "/custom/codex-home"
 ```
 
 ```bash
 CODEX_HOME="/custom/codex-home" \
-  npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+  npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
 Run ChatGPT/Codex with the same `CODEX_HOME`; otherwise the application will load a different Hook configuration.
@@ -87,7 +87,7 @@ Run ChatGPT/Codex with the same `CODEX_HOME`; otherwise the application will loa
 3. Run doctor:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor
 ```
 
 A healthy result confirms the Skill files, eight handlers, trust hashes, Hook feature, configuration, and fleet report command. A project is registered only after its first prompt.
@@ -116,7 +116,7 @@ To keep a project outside V2, add its exact absolute path to `excluded_project_r
 ## Update
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite update
 ```
 
 Update runs the same backup-and-merge process as install. Existing custom config values remain authoritative; only missing defaults are added.
@@ -124,7 +124,7 @@ Update runs the same backup-and-merge process as install. Existing custom config
 ## Uninstall
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall
 ```
 
 Default uninstall removes the owned Skill, bootstrap script, Hook handlers, and their trust entries. It keeps V2 config and all project memory.
@@ -132,7 +132,7 @@ Default uninstall removes the owned Skill, bootstrap script, Hook handlers, and 
 Remove the V2 config as well:
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall --purge-config
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall --purge-config
 ```
 
 Even with `--purge-config`, project `.codex-memory/` directories are not deleted.
@@ -140,8 +140,8 @@ Even with `--purge-config`, project `.codex-memory/` directories are not deleted
 ## Dry Run And JSON Output
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --dry-run
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor --json
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install --dry-run
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor --json
 ```
 
 Use `--json` for Agent automation and machine-readable checks.

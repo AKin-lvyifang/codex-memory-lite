@@ -25,13 +25,13 @@ codex --version
 ## 一键安装
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
-这条命令默认安装仓库当前 `main` 分支。如果你更在意结果可复现，可以锁定版本：
+这条命令会跟随 GitHub 最新稳定 Release，不需要克隆仓库历史。如果你更在意结果可复现，可以锁定版本：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite install
 ```
 
 也可以使用 `curl`：
@@ -70,12 +70,12 @@ Agent 最后应该告诉你：安装到了哪个 Codex 主目录、备份在哪�
 两种写法都可以：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --codex-home "/custom/codex-home"
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install --codex-home "/custom/codex-home"
 ```
 
 ```bash
 CODEX_HOME="/custom/codex-home" \
-  npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+  npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
 后续启动 ChatGPT / Codex 时也要使用同一个 `CODEX_HOME`，否则应用读取的是另一套 Hook 配置。
@@ -87,7 +87,7 @@ CODEX_HOME="/custom/codex-home" \
 3. 执行 doctor：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor
 ```
 
 doctor 通过代表 Skill 文件、8 个 Hook、信任哈希、Hook 开关、配置和全项目台账命令都正常。项目本身要等第一次 Prompt 才会注册。
@@ -114,7 +114,7 @@ V2 配置位于 `${CODEX_HOME:-$HOME/.codex}/memory-v2/config.json`。
 ## 更新
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite update
 ```
 
 更新仍然会先备份再合并。你自己改过的配置值优先，只补缺失的默认项。
@@ -122,7 +122,7 @@ npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite upd
 ## 卸载
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall
 ```
 
 默认卸载会移除本产品管理的 Skill、启动脚本、Hook 和信任记录，但保留 V2 配置和所有项目记忆。
@@ -130,7 +130,7 @@ npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uni
 如果连 V2 配置也要移除：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall --purge-config
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall --purge-config
 ```
 
 即使使用 `--purge-config`，项目 `.codex-memory/` 仍然不会被删除。
@@ -138,8 +138,8 @@ npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uni
 ## 预演与 JSON 输出
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install --dry-run
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor --json
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install --dry-run
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor --json
 ```
 
 Agent 自动化或脚本检查时，建议使用 `--json`。

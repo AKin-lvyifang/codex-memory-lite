@@ -25,7 +25,7 @@
 ## 安装
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install
 ```
 
 安装后新建一个 task，或重启 ChatGPT / Codex。第一次在项目里发送消息时，记忆会自动初始化。
@@ -97,13 +97,13 @@ V2 使用以下结构：
 
 ```bash
 # 更新，不覆盖其他配置
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite update
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite update
 
 # 检查 Skill、Hook、信任状态、配置和项目运行台账
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite doctor
 
 # 卸载运行组件，默认保留 V2 配置和所有项目记忆
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite uninstall
 ```
 
 如果 Codex 主目录不是默认的 `~/.codex`，可使用 `--codex-home PATH` 或设置 `CODEX_HOME=/path`。版本锁定、备份位置和完整参数见 [安装与配置](docs/install.zh-CN.md)。

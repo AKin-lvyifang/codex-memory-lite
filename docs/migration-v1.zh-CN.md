@@ -21,7 +21,7 @@ V2 是一次工作流层面的破坏性升级。V1 依赖 4 个手动路由的 S
 1. 安装 V2：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite install
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite install
 ```
 
 2. 新建一个 task，或重启 ChatGPT / Codex。
@@ -30,7 +30,7 @@ npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-l
 5. 运行 doctor：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite doctor
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite doctor
 ```
 
 6. 让 Agent 查看当前项目进度，确认 current、task、spec 仍然可读。
@@ -92,7 +92,7 @@ ${CODEX_HOME:-$HOME/.codex}/backups/codex-memory-lite/
 如果只想停用 V2，不动项目：
 
 ```bash
-npx --yes --package=github:AKin-lvyifang/codex-memory-lite#v2.0.0 codex-memory-lite uninstall
+npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/download/v2.0.0/codex-memory-lite-2.0.0.tgz codex-memory-lite uninstall
 ```
 
 它会移除 V2 运行组件和所属 Hook，但保留 `memory-v2/config.json` 和所有项目 `.codex-memory/`。只有明确回到 V1 时，才恢复旧路由。

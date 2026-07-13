@@ -6,7 +6,7 @@ const path = require("node:path");
 const test = require("node:test");
 
 const ROOT = path.resolve(__dirname, "..");
-const INSTALL = "npx --yes --package=github:AKin-lvyifang/codex-memory-lite codex-memory-lite install";
+const INSTALL = "npx --yes --package=https://github.com/AKin-lvyifang/codex-memory-lite/releases/latest/download/codex-memory-lite.tgz codex-memory-lite install";
 
 function markdownFiles() {
   const files = ["README.md", "README.zh-CN.md", "CHANGELOG.md", "CHANGELOG.zh-CN.md"];
