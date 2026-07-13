@@ -1,5 +1,5 @@
 <a href="https://github.com/AKin-lvyifang/codex-memory-lite">
-  <img width="1280" alt="Codex Memory Lite v2.0.0, automatic project memory for Codex." src="docs/images/codex-memory-lite-v2.0.0.png">
+  <img width="1280" alt="Codex Memory Lite v2.0.0, automatic project memory for Codex." src="https://raw.githubusercontent.com/AKin-lvyifang/codex-memory-lite/v2.0.0/docs/images/codex-memory-lite-v2.0.0.png">
 </a>
 
 <p align="center">

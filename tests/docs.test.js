@@ -56,5 +56,7 @@ test("README first-run paths and versions match the package", () => {
     assert.equal(text.includes("https://github.com/AKin-lvyifang/codex-memory-lite"), true);
     assert.equal(text.includes("doctor"), true);
   }
-  assert.equal(fs.existsSync(path.join(ROOT, "docs", "images", `codex-memory-lite-v${version}.png`)), true);
+  const hero = `docs/images/codex-memory-lite-v${version}.png`;
+  assert.equal(fs.existsSync(path.join(ROOT, hero)), true);
+  assert.equal(fs.readFileSync(path.join(ROOT, "README.md"), "utf8").includes(`/v${version}/${hero}`), true);
 });
